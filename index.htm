@@ -12,11 +12,32 @@
     <canvas id="canvas" width="700" height="500"></canvas>
 
     <!-- Panel lateral -->
+<div>
+
+    <h2>Ventana de recorte</h2>
+
     <div>
-
-        <h2>Ventana de recorte</h2>
-
+        x1 <input type="number" id="xmin" value="150">
+        y1 <input type="number" id="ymin" value="100">
     </div>
+
+    <div>
+        x2 <input type="number" id="xmax" value="500">
+        y2 <input type="number" id="ymax" value="350">
+    </div>
+
+    <button id="updateBtn">
+        Actualizar
+    </button>
+
+    <br><br>
+
+    <button id="firstBtn">|&lt;</button>
+    <button id="prevBtn">&lt;</button>
+    <button id="nextBtn">&gt;</button>
+    <button id="lastBtn">&gt;|</button>
+
+</div>
 
     <script src="script.js"></script>
 
