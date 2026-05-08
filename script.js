@@ -1,33 +1,82 @@
-// Obtener canvas
+// ======================================================
+// CANVAS
+// ======================================================
+
 const canvas = document.getElementById("canvas");
 
-// Contexto
 const ctx = canvas.getContext("2d");
 
-// Convertir coordenada Y
+// ======================================================
+// CONVERTIR COORDENADAS
+// ======================================================
+
+// Convierte coordenadas matemáticas
+// a coordenadas del canvas
 function convertY(y){
 
     return canvas.height - y;
 
 }
 
-// Dibujar cuadrado de prueba
-ctx.fillStyle = "red";
+// ======================================================
+// DDA
+// ======================================================
 
-ctx.fillRect(
-    50,
-    convertY(50),
-    10,
-    10
-);
-// Limpiar canvas
-function clearCanvas(){
+// Función personalizada para dibujar líneas
+// usando rasterización manual
+function drawLineDDA(x1,y1,x2,y2,color){
 
-    ctx.clearRect(
-        0,
-        0,
-        canvas.width,
-        canvas.height
+    // Diferencias
+    let dx = x2 - x1;
+    let dy = y2 - y1;
+
+    // Cantidad de pasos
+    let steps = Math.max(
+        Math.abs(dx),
+        Math.abs(dy)
     );
 
+    // Incrementos
+    let xIncrement = dx / steps;
+    let yIncrement = dy / steps;
+
+    // Punto inicial
+    let x = x1;
+    let y = y1;
+
+    // Color
+    ctx.fillStyle = color;
+
+    // Dibujar pixel a pixel
+    for(let i = 0; i <= steps; i++){
+
+        ctx.fillRect(
+
+            Math.round(x),
+
+            Math.round(convertY(y)),
+
+            1,
+
+            1
+
+        );
+
+        x += xIncrement;
+        y += yIncrement;
+
+    }
+
 }
+
+// ======================================================
+// PRUEBA
+// ======================================================
+
+drawLineDDA(
+    100,
+    100,
+    400,
+    300,
+    "blue"
+);
