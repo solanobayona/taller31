@@ -5,34 +5,32 @@
     <meta charset="UTF-8">
     <title>Cohen Sutherland</title>
     <style>
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    justify-content: center; /* Centrado horizontal */
+    align-items: center;     /* Centrado vertical */
+    min-height: 100vh;      /* Ocupa toda la altura de la ventana */
+    gap: 40px;
+    background: #e5e7eb;
+}
 
-    body{
-        margin:0;
-        padding:20px;
+.container { 
+    display: flex;
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    gap: 30px;
+}
 
-        font-family:Arial;
-
-        display:flex;
-        gap:20px;
-
-        background:#f0f0f0;
-    }
-
-    canvas{
-        border:1px solid black;
-        background:white;
-    }
-
-    input{
-        width:60px;
-        margin:5px;
-    }
-
-    button{
-        padding:5px 10px;
-        margin:3px;
-    }
-
+canvas {
+    border: 2px solid #374151;
+    border-radius: 4px;
+    background: #ffffff;
+}
 </style>
 </head>
 
