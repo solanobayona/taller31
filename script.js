@@ -78,12 +78,17 @@ function drawLineDDA(x1, y1, x2, y2, color) {
 
     ctx.fillStyle = color;
     for (let i = 0; i <= steps; i++) {
-        ctx.fillRect(Math.round(x), Math.round(convertY(y)), 1, 1);
+        // CAMBIO: Cambiamos 1, 1 por 3, 3 para dar grosor
+        ctx.fillRect(
+            Math.round(x) - 1, 
+            Math.round(convertY(y)) - 1, 
+            3, 
+            3
+        );
         x += xInc;
         y += yInc;
     }
 }
-
 // ======================================================
 // REQUISITO: LAS 2 FUNCIONES PRINCIPALES (Viewport y Línea)
 // ======================================================
