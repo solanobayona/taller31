@@ -20,3 +20,14 @@ ctx.fillRect(
     10,
     10
 );
+// Limpiar canvas
+function clearCanvas(){
+
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+}
