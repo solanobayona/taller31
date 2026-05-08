@@ -1,10 +1,22 @@
 // Obtener canvas
 const canvas = document.getElementById("canvas");
 
-// Obtener contexto 2D
+// Contexto
 const ctx = canvas.getContext("2d");
 
-// Prueba inicial
+// Convertir coordenada Y
+function convertY(y){
+
+    return canvas.height - y;
+
+}
+
+// Dibujar cuadrado de prueba
 ctx.fillStyle = "red";
 
-ctx.fillRect(50,50,50,50);
+ctx.fillRect(
+    50,
+    convertY(50),
+    10,
+    10
+);
