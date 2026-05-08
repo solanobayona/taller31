@@ -1,43 +1,60 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
-    <title>Cohen Sutherland</title>
+    <title>Proyecto Cohen-Sutherland - Algoritmos Gráficos</title>
     <style>
-    body {
-        margin: 0; padding: 0;
-        font-family: 'Segoe UI', sans-serif;
-        display: flex; justify-content: center; align-items: center;
-        min-height: 100vh; background: #e5e7eb;
-    }
-    .container {
-        display: flex; background: white; padding: 30px;
-        border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); gap: 30px;
-    }
-    canvas { border: 2px solid #374151; background: white; }
-    input { width: 60px; margin: 5px; padding: 5px; }
-    button { padding: 8px 12px; cursor: pointer; border-radius: 4px; border: 1px solid #ccc; }
-    button:hover { background: #f0f0f0; }
-</style>
-
+        body {
+            margin: 0; padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; background: #f3f4f6;
+        }
+        .container {
+            display: flex; background: white; padding: 25px;
+            border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); gap: 30px;
+        }
+        canvas { 
+            border: 2px solid #1f2937; background: #ffffff; 
+            border-radius: 8px;
+        }
+        .controls { width: 280px; display: flex; flex-direction: column; gap: 15px; }
+        .input-group { display: flex; justify-content: space-between; align-items: center; }
+        input { 
+            width: 70px; padding: 6px; border: 1px solid #d1d5db; 
+            border-radius: 5px; text-align: center;
+        }
+        button { 
+            padding: 10px; cursor: pointer; border-radius: 6px; 
+            border: none; background: #2563eb; color: white;
+            font-weight: bold; transition: background 0.3s;
+        }
+        button:hover { background: #1d4ed8; }
+        .nav-buttons { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 5px; }
+        .nav-buttons button { background: #4b5563; }
+        .nav-buttons button:hover { background: #374151; }
+        hr { border: 0; border-top: 1px solid #e5e7eb; margin: 10px 0; }
+        #caseName { color: #2563eb; margin: 0; font-size: 1.4rem; }
+    </style>
+</head>
 <body>
     <div class="container">
         <canvas id="canvas" width="700" height="500"></canvas>
-        <div>
-            <h2 id="caseName" style="color: #2563eb; margin-top: 0;">Caso</h2>
-            <h3>Ventana de recorte</h3>
-            <div>
-                x1 <input type="number" id="xmin" value="200">
-                y1 <input type="number" id="ymin" value="125">
+        <div class="controls">
+            <h2 id="caseName">Cargando...</h2>
+            <p style="font-size: 0.9rem; color: #6b7280;">Define los límites del Viewport:</p>
+            <div class="input-group">
+                <span>X mín:</span> <input type="number" id="xmin" value="150">
+                <span>Y mín:</span> <input type="number" id="ymin" value="100">
             </div>
-            <div>
-                x2 <input type="number" id="xmax" value="500">
-                y2 <input type="number" id="ymax" value="375">
+            <div class="input-group">
+                <span>X máx:</span> <input type="number" id="xmax" value="550">
+                <span>Y máx:</span> <input type="number" id="ymax" value="400">
             </div>
-            <button id="updateBtn">Actualizar Viewport</button>
+            <button id="updateBtn">Aplicar Cambios</button>
             <hr>
-            <div style="text-align: center;">
+            <p style="font-size: 0.9rem; color: #6b7280; text-align: center;">Navegación de Casos</p>
+            <div class="nav-buttons">
                 <button id="firstBtn">|&lt;</button>
                 <button id="prevBtn">&lt;</button>
                 <button id="nextBtn">&gt;</button>
@@ -45,6 +62,6 @@
             </div>
         </div>
     </div>
+    <script src="script.js"></script>
 </body>
-
 </html>
