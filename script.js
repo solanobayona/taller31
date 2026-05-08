@@ -1,13 +1,12 @@
 // ======================================================
-// CONFIGURACIÓN INICIAL Y CANVAS
+// CONFIGURACIÓN DE CANVAS Y VARIABLES GLOBALES
 // ======================================================
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
-// Límites del Viewport (Modificables por el usuario)
 let xmin, ymin, xmax, ymax;
 
-// Códigos de región para Cohen-Sutherland
+// Definición de códigos de región (4 bits: TBRL)
 const INSIDE = 0; // 0000
 const LEFT = 1;   // 0001
 const RIGHT = 2;  // 0010
@@ -15,57 +14,26 @@ const BOTTOM = 4; // 0100
 const TOP = 8;    // 1000
 
 // ======================================================
-// DEFINICIÓN DE LOS 5 CASOS ESPECÍFICOS
-// ======================================================
-const scenes = [
-    {
-        name: "Dentro del Viewport",
-        x1: 200, y1: 150, x2: 400, y2: 300,
-        color: "#2ecc71" // Verde
-    },
-    {
-        name: "Fuera del Viewport",
-        x1: 50, y1: 50, x2: 100, y2: 80,
-        color: "#e74c3c" // Rojo
-    },
-    {
-        name: "Tocando una Esquina",
-        x1: 100, y1: 50, x2: 150, y2: 100, // Toca esquina inferior izquierda
-        color: "#f1c40f" // Amarillo/Naranja
-    },
-    {
-        name: "Atravesando Arriba a Abajo",
-        x1: 300, y1: 50, x2: 300, y2: 450,
-        color: "#9b59b6" // Morado
-    },
-    {
-        name: "Superior y Lateral",
-        x1: 100, y1: 300, x2: 400, y2: 450, // Cruza lateral izquierdo y parte superior
-        color: "#3498db" // Azul
-    }
-];
-
-let currentScene = 0;
-
-// ======================================================
-// FUNCIONES DE APOYO (Matemáticas y Conversión)
+// FUNCIONES DE APOYO Y CONVERSIÓN
 // ======================================================
 
+// Convierte coordenada Y para que (0,0) sea abajo a la izquierda
 function convertY(y) {
     return canvas.height - y;
 }
 
+// Calcula el código de región de un punto (x, y)
 function computeCode(x, y) {
     let code = INSIDE;
-    if (x < xmin) code |= LEFT;
+    if (x < xmin)      code |= LEFT;
     else if (x > xmax) code |= RIGHT;
-    if (y < ymin) code |= BOTTOM;
+    if (y < ymin)      code |= BOTTOM;
     else if (y > ymax) code |= TOP;
     return code;
 }
 
 // ======================================================
-// REQUISITO: FUNCIÓN NO PRIMITIVA (DDA)
+// REQUISITO: FUNCIÓN DE TRAZADO NO PRIMITIVA (DDA)
 // ======================================================
 function drawLineDDA(x1, y1, x2, y2, color) {
     let dx = x2 - x1;
@@ -78,45 +46,34 @@ function drawLineDDA(x1, y1, x2, y2, color) {
 
     ctx.fillStyle = color;
     for (let i = 0; i <= steps; i++) {
-        // CAMBIO: Cambiamos 1, 1 por 3, 3 para dar grosor
-        ctx.fillRect(
-            Math.round(x) - 1, 
-            Math.round(convertY(y)) - 1, 
-            3, 
-            3
-        );
+        // Dibujamos con un grosor de 3x3 para mejor visibilidad
+        ctx.fillRect(Math.round(x) - 1, Math.round(convertY(y)) - 1, 3, 3);
         x += xInc;
         y += yInc;
     }
 }
-// ======================================================
-// REQUISITO: LAS 2 FUNCIONES PRINCIPALES (Viewport y Línea)
-// ======================================================
 
-// 1. Función para el Viewport
-function drawViewport() {
-    // Dibujamos el rectángulo usando la función DDA personalizada
-    drawLineDDA(xmin, ymin, xmax, ymin, "black");
-    drawLineDDA(xmax, ymin, xmax, ymax, "black");
-    drawLineDDA(xmax, ymax, xmin, ymax, "black");
-    drawLineDDA(xmin, ymax, xmin, ymin, "black");
-}
-
-// 2. Función para la Línea con Algoritmo Cohen-Sutherland
+// ======================================================
+// ALGORITMO DE RECORTE DE COHEN-SUTHERLAND
+// ======================================================
 function drawClippedLine(x1, y1, x2, y2, color) {
     let code1 = computeCode(x1, y1);
     let code2 = computeCode(x2, y2);
     let accept = false;
 
-    // Dibujar línea original en gris muy claro para referencia (opcional)
-    drawLineDDA(x1, y1, x2, y2, "#eeeeee");
+    // Guardamos originales para dibujar la línea "fantasma" de fondo
+    let origX1 = x1, origY1 = y1, origX2 = x2, origY2 = y2;
 
     while (true) {
-        if (!(code1 | code2)) {
-            accept = true; break;
-        } else if (code1 & code2) {
-            break;
+        if (!(code1 | code2)) { 
+            // Aceptación trivial
+            accept = true; 
+            break; 
+        } else if (code1 & code2) { 
+            // Rechazo trivial
+            break; 
         } else {
+            // Recorte necesario: elegir un punto fuera
             let codeOut = code1 ? code1 : code2;
             let x, y;
 
@@ -135,19 +92,59 @@ function drawClippedLine(x1, y1, x2, y2, color) {
             }
 
             if (codeOut === code1) {
-                x1 = x; y1 = y; code1 = computeCode(x1, y1);
+                x1 = x; y1 = y;
+                code1 = computeCode(x1, y1);
             } else {
-                x2 = x; y2 = y; code2 = computeCode(x2, y2);
+                x2 = x; y2 = y;
+                code2 = computeCode(x2, y2);
             }
         }
     }
+
+    // Dibujar línea original en gris muy claro
+    drawLineDDA(origX1, origY1, origX2, origY2, "#f0f0f0");
+    
+    // Dibujar la parte aceptada en el color del caso
     if (accept) {
         drawLineDDA(x1, y1, x2, y2, color);
     }
 }
 
 // ======================================================
-// LÓGICA DE CONTROL Y NAVEGACIÓN
+// DEFINICIÓN DE ESCENAS (5 CASOS)
+// ======================================================
+const scenes = [
+    {
+        name: "1. Dentro del Viewport",
+        coords: () => ({ x1: xmin + 50, y1: ymin + 50, x2: xmax - 50, y2: ymax - 50 }),
+        color: "#10b981" // Verde
+    },
+    {
+        name: "2. Fuera del Viewport",
+        coords: () => ({ x1: xmin - 100, y1: ymin - 100, x2: xmin - 20, y2: ymin - 20 }),
+        color: "#ef4444" // Rojo
+    },
+    {
+        name: "3. Tocando una Esquina",
+        coords: () => ({ x1: xmin - 50, y1: ymin - 50, x2: xmin, y2: ymin }),
+        color: "#f59e0b" // Naranja
+    },
+    {
+        name: "4. Atraviesa de Arriba a Abajo",
+        coords: () => ({ x1: (xmin + xmax) / 2, y1: ymin - 50, x2: (xmin + xmax) / 2, y2: ymax + 50 }),
+        color: "#8b5cf6" // Morado
+    },
+    {
+        name: "5. Superior y Lateral",
+        coords: () => ({ x1: xmin - 50, y1: ymax - 50, x2: xmin + 50, y2: ymax + 50 }),
+        color: "#3b82f6" // Azul
+    }
+];
+
+let currentScene = 0;
+
+// ======================================================
+// LÓGICA DE CONTROL Y RENDER
 // ======================================================
 
 function updateBounds() {
@@ -157,27 +154,34 @@ function updateBounds() {
     ymax = parseInt(document.getElementById("ymax").value);
 }
 
+function drawViewport() {
+    // Dibujamos el marco del viewport usando DDA
+    drawLineDDA(xmin, ymin, xmax, ymin, "black");
+    drawLineDDA(xmax, ymin, xmax, ymax, "black");
+    drawLineDDA(xmax, ymax, xmin, ymax, "black");
+    drawLineDDA(xmin, ymax, xmin, ymin, "black");
+}
+
 function render() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     updateBounds();
     drawViewport();
 
-    const line = scenes[currentScene];
-    drawClippedLine(line.x1, line.y1, line.x2, line.y2, line.color);
+    const scene = scenes[currentScene];
+    const pts = scene.coords(); // Obtener coordenadas dinámicas
+    
+    document.getElementById("caseName").innerText = scene.name;
+    
+    // Llamada principal al algoritmo de recorte
+    drawClippedLine(pts.x1, pts.y1, pts.x2, pts.y2, scene.color);
 }
 
-// Eventos de Botones
+// Asignación de eventos a botones
 document.getElementById("updateBtn").onclick = render;
-document.getElementById("nextBtn").onclick = () => {
-    currentScene = (currentScene + 1) % scenes.length;
-    render();
-};
-document.getElementById("prevBtn").onclick = () => {
-    currentScene = (currentScene - 1 + scenes.length) % scenes.length;
-    render();
-};
+document.getElementById("nextBtn").onclick = () => { currentScene = (currentScene + 1) % scenes.length; render(); };
+document.getElementById("prevBtn").onclick = () => { currentScene = (currentScene - 1 + scenes.length) % scenes.length; render(); };
 document.getElementById("firstBtn").onclick = () => { currentScene = 0; render(); };
 document.getElementById("lastBtn").onclick = () => { currentScene = scenes.length - 1; render(); };
 
-// Inicio
+// Ejecución inicial
 render();
