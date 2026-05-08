@@ -5,70 +5,46 @@
     <meta charset="UTF-8">
     <title>Cohen Sutherland</title>
     <style>
-body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    display: flex;
-    justify-content: center; /* Centrado horizontal */
-    align-items: center;     /* Centrado vertical */
-    min-height: 100vh;      /* Ocupa toda la altura de la ventana */
-    gap: 40px;
-    background: #e5e7eb;
-}
-
-.container { 
-    display: flex;
-    background: white;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-    gap: 30px;
-}
-
-canvas {
-    border: 2px solid #374151;
-    border-radius: 4px;
-    background: #ffffff;
-}
+    body {
+        margin: 0; padding: 0;
+        font-family: 'Segoe UI', sans-serif;
+        display: flex; justify-content: center; align-items: center;
+        min-height: 100vh; background: #e5e7eb;
+    }
+    .container {
+        display: flex; background: white; padding: 30px;
+        border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); gap: 30px;
+    }
+    canvas { border: 2px solid #374151; background: white; }
+    input { width: 60px; margin: 5px; padding: 5px; }
+    button { padding: 8px 12px; cursor: pointer; border-radius: 4px; border: 1px solid #ccc; }
+    button:hover { background: #f0f0f0; }
 </style>
-</head>
 
 <body>
-
-    <!-- Canvas principal -->
-    <canvas id="canvas" width="700" height="500"></canvas>
-
-    <!-- Panel lateral -->
-<div>
-
-    <h2>Ventana de recorte</h2>
-
-    <div>
-        x1 <input type="number" id="xmin" value="150">
-        y1 <input type="number" id="ymin" value="100">
+    <div class="container">
+        <canvas id="canvas" width="700" height="500"></canvas>
+        <div>
+            <h2 id="caseName" style="color: #2563eb; margin-top: 0;">Caso</h2>
+            <h3>Ventana de recorte</h3>
+            <div>
+                x1 <input type="number" id="xmin" value="200">
+                y1 <input type="number" id="ymin" value="125">
+            </div>
+            <div>
+                x2 <input type="number" id="xmax" value="500">
+                y2 <input type="number" id="ymax" value="375">
+            </div>
+            <button id="updateBtn">Actualizar Viewport</button>
+            <hr>
+            <div style="text-align: center;">
+                <button id="firstBtn">|&lt;</button>
+                <button id="prevBtn">&lt;</button>
+                <button id="nextBtn">&gt;</button>
+                <button id="lastBtn">&gt;|</button>
+            </div>
+        </div>
     </div>
-
-    <div>
-        x2 <input type="number" id="xmax" value="500">
-        y2 <input type="number" id="ymax" value="350">
-    </div>
-
-    <button id="updateBtn">
-        Actualizar
-    </button>
-
-    <br><br>
-
-    <button id="firstBtn">|&lt;</button>
-    <button id="prevBtn">&lt;</button>
-    <button id="nextBtn">&gt;</button>
-    <button id="lastBtn">&gt;|</button>
-
-</div>
-
-    <script src="script.js"></script>
-
 </body>
 
 </html>
