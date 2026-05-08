@@ -20,7 +20,6 @@ let ymax = 350;
 // ESCENAS
 // ======================================================
 
-// Casos de prueba
 const scenes = [
 
     {
@@ -65,6 +64,9 @@ const scenes = [
 
 ];
 
+// Escena actual
+let currentScene = 0;
+
 // ======================================================
 // CONVERSIÓN DE COORDENADAS
 // ======================================================
@@ -79,7 +81,6 @@ function convertY(y){
 // FUNCIÓN DDA
 // ======================================================
 
-// Función personalizada para dibujar líneas
 function drawLineDDA(x1,y1,x2,y2,color){
 
     let dx = x2 - x1;
@@ -160,17 +161,38 @@ function drawViewport(){
 }
 
 // ======================================================
-// PRUEBA
+// RENDERIZAR ESCENA
 // ======================================================
 
-drawViewport();
+function renderScene(){
 
-let line = scenes[0];
+    // Limpiar canvas
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
 
-drawLineDDA(
-    line.x1,
-    line.y1,
-    line.x2,
-    line.y2,
-    "blue"
-);
+    // Dibujar viewport
+    drawViewport();
+
+    // Obtener escena actual
+    let line = scenes[currentScene];
+
+    // Dibujar línea
+    drawLineDDA(
+        line.x1,
+        line.y1,
+        line.x2,
+        line.y2,
+        "blue"
+    );
+
+}
+
+// ======================================================
+// INICIO
+// ======================================================
+
+renderScene();
